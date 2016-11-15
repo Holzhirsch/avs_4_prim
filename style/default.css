@@ -1,0 +1,50 @@
+#wrapper {
+    width: 800px;
+    margin: 0 auto;
+}
+#output {
+    height: 200px;
+    width: 800px;
+    background-color: whitesmoke;
+    overflow-y: scroll;
+    padding: 10px;
+    font-size: 10pt;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    margin-left: 10px;
+}
+#chatwindow {
+    height: 200px;
+    width: 800px;
+    background-color: lightblue;
+    overflow-y: scroll;
+    padding: 10px;
+    font-size: 10pt;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    font-family: monospace; 
+}
+#chatmessage {
+    height: 100px;
+    width: 800px;
+    background-color: azure;
+    overflow-y: scroll;
+    padding: 10px;
+    font-size: 10pt;
+    margin-bottom: 20px;
+    margin-left: 10px;
+}
+.btn {
+    font-size: 12px;
+    padding: 8px;
+    width: 100px;
+    height: 50px;
+}
+#chat {
+    display: none;
+}
+#msg {
+    background-color: lightgoldenrodyellow;
+    border-radius: 5px;
+    padding-left:  5px;
+}
