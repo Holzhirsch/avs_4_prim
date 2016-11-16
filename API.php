@@ -61,6 +61,9 @@ class API {
                 $ipRepo->unregister($this->ip_to_del);
                 break;
             case "query":
+                //
+                $sercom = $this->startServerCom();
+                //
                 $ipRepo = $this->getIPRepositoryService();
                 $reg_ips = $ipRepo->query();
                 return $reg_ips;
