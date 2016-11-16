@@ -1,5 +1,5 @@
 
-var API_URL = "http://192.168.0.11/AVS_3/API.php";
+var API_URL = "http://172.22.0.1/AVS_3/avs_3_simpleServerChat/API.php";
 var chat_room = "";
 var ip_adress = "";
 var last_message = 0;
@@ -34,19 +34,23 @@ function chatUpdate() {
     }
 }
 
-function chatUpdate() {
+function sendMessage() {
+    chatUpdate();
+    var message = getChatMessage();
+    if (isEmptyMessage(message)) {
+        return;
+    }
+
     var data = {
-        "function": "getUpdate",
+        "function": "setMessage",
+        "chat_message": message,
         "chat_room": chat_room,
-        "ip": ip_adress,
-        "last_msg": last_message
+        "ip": ip_adress
     };
 
     makeAjaxCall(API_URL, data);
-    if (!isEmptyUpdate()) {
-        appendToChatWindow(getUpdateResponse());
-        updateLastChatMessageCount();
-    }
+    resetChatMessageWindow();
+    chatUpdate();
 }
 
 function isEmptyUpdate() {
