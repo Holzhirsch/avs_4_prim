@@ -113,7 +113,9 @@ class ServerCommunication {
     public function createOwnRepo($repo_ips) {
         $repo = new IPRepositoryService();
         foreach ($repo_ips as $ip) {
-            $repo->register($ip);
+            if ($entry !== $this->ip) {
+                $repo->register($entry);
+            }
         }
     }
 
