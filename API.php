@@ -70,7 +70,6 @@ class API {
                     $sercom = $this->startServerCom();
                     $sercom->sendIPToRepo();
                 }
-
                 break;
             case "unregister":
                 if ($this->I_AM_REPO) {
@@ -84,7 +83,8 @@ class API {
             case "query":
                 $ipRepo = $this->getIPRepositoryService();
                 $reg_ips = $ipRepo->query();
-                return $reg_ips;
+                $this->sendJsonResponse(["response" => $reg_ips]);
+                break;
             case "setMessageServer":
                 $sercom = $this->startServerCom();
                 $sercom->setMessageFromServer($ip, $chat_room, $message);

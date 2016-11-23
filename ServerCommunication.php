@@ -84,7 +84,9 @@ class ServerCommunication {
             $response = $request->send();
             if (200 == $response->getStatus()) {
                 if ($b_get_response) {
-                    return $response->getBody();
+                    $temp = $response->getBody();
+                    $array = json_decode($temp)->response;
+                    return $array;
                 }
             } else {
                 echo 'Unexpected HTTP status: ' . $response->getStatus();
@@ -109,7 +111,6 @@ class ServerCommunication {
     }
 
     public function createOwnRepo($repo_ips) {
-        echo $repo_ips;
         $repo = new IPRepositoryService();
         foreach ($repo_ips as $ip) {
             $repo->register($ip);

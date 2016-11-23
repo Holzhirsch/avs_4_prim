@@ -18,7 +18,7 @@ class Utils {
         $bt = debug_backtrace(1);
         $caller = $bt[1];
         $msg = "[DEBUG]_F[" . $caller['file'] . "]_C[" . $count . "]_L[" . $caller['line'] . "]: " . $text . "<br>";
-         echo $msg;
+//         echo $msg;
         if(!file_exists("log")) {
             $handle = fopen("log", "w+");
         }

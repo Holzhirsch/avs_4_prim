@@ -36,16 +36,19 @@ class IPRepositoryService {
     public function getRegisteredIPs() {
         Utils::e("Get all entries from file: " . $this->ip_repo_file);
         $entries = file($this->ip_repo_file);
-        $response = "";
+        $response = [];
         if (empty($entries)) {
             return $response;
         }
         foreach ($entries AS $line) {
             $line = rtrim($line);
             $entry = unserialize($line);
-            $response .= $entry[0] . "<br>";
+            array_push($response, $entry[0]);
         }
-        Utils::e($response);
+        
+        foreach($response as $item) {
+            Utils::e("responseItem: " . $item);
+        }
         return $response;
     }
 
