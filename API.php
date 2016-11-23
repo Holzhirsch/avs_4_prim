@@ -12,15 +12,25 @@ include "ServerCommunication.php";
  * Description of API:
  * Class to login and send needed data to the functions.
  * 
+ * 
+ * info:
+ * chmod 777 folder
+ *
+ *  change repo_server_url 
+ *  in api.php and chat.js for all servers
+ *  update run configs
+ * 
  */
 class API {
 
+    private $I_AM_REPO = true;
     private $function = null;
     private $ip = null;
     private $chat_room = null;
     private $chat_message = null;
     private $last_msg = 0;
     private $ip_to_del = null;
+    private $ping_msg = null;
 
     public function __construct() {
         $this->function = $_POST["function"] ?? null;
@@ -30,11 +40,11 @@ class API {
         isset($_POST["last_msg"]) AND $this->last_msg = intval($_POST["last_msg"]);
 
         $this->ip_to_del = $_POST["ip_to_del"] ?? null;
+        $this->ping_msg = $_POST["ping"] ?? null;
     }
 
     public function start() {
         $this->startFunction();
-        $this->startServerCom()->startRepoExchange();
     }
 
     /**
@@ -53,23 +63,42 @@ class API {
                 $this->sendJsonResponse($response);
                 break;
             case "register":
-                $ipRepo = $this->getIPRepositoryService();
-                $ipRepo->register($this->ip);
+                if ($this->I_AM_REPO) {
+                    $ipRepo = $this->getIPRepositoryService();
+                    $ipRepo->register($this->ip);
+                } else {
+                    $sercom = $this->startServerCom();
+                    $sercom->sendIPToRepo();
+                }
+
                 break;
             case "unregister":
-                $ipRepo = $this->getIPRepositoryService();
-                $ipRepo->unregister($this->ip_to_del);
+                if ($this->I_AM_REPO) {
+                    $ipRepo = $this->getIPRepositoryService();
+                    $ipRepo->unregister($this->ip_to_del);
+                } else {
+                    $sercom = $this->startServerCom();
+                    $sercom->removeIPFromRepo();
+                }
                 break;
             case "query":
-                //
-                $sercom = $this->startServerCom();
-                //
                 $ipRepo = $this->getIPRepositoryService();
                 $reg_ips = $ipRepo->query();
                 return $reg_ips;
             case "setMessageServer":
                 $sercom = $this->startServerCom();
                 $sercom->setMessageFromServer($ip, $chat_room, $message);
+                break;
+            case "pingOnline":
+                $sercom = $this->startServerCom();
+                return $sercom->setPingOnline($this->ping_msg);
+                break;
+            case "pingNewRepo":
+                $sercom = $this->startServerCom();
+                $sercom->setPingOnline($this->ping_msg);
+                break;
+            case "startRepoEx":
+                $this->startServerCom()->startRepoExchange();
                 break;
             default :
                 throw new Exception("No such function: '" . $this->function . "' exits!");
@@ -89,7 +118,7 @@ class API {
     }
 
     public function startServerCom() {
-        return new ServerCommunication();
+        return new ServerCommunication($this->ip, $this->I_AM_REPO);
     }
 
 }

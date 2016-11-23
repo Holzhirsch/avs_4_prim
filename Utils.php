@@ -17,7 +17,14 @@ class Utils {
         $count++;
         $bt = debug_backtrace(1);
         $caller = $bt[1];
-        echo "[DEBUG]_F[" . $caller['file'] . "]_C[" . $count . "]_L[" . $caller['line'] . "]: " . $text . "<br>";
+        $msg = "[DEBUG]_F[" . $caller['file'] . "]_C[" . $count . "]_L[" . $caller['line'] . "]: " . $text . "<br>";
+         echo $msg;
+        if(!file_exists("log")) {
+            $handle = fopen("log", "w+");
+        }
+        $handle = fopen("log", "a");
+        fwrite($handle, $msg . "\r\n");
+        fclose($handle);
     }
 
     public static function getLock($file_name) {

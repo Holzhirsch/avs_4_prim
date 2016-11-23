@@ -1,5 +1,5 @@
 
-var API_URL = "http://172.22.0.1/AVS_3/avs_3_simpleServerChat/API.php";
+var API_URL = "http://192.168.0.11/AVS_3/API.php";
 var chat_room = "";
 var ip_adress = "";
 var last_message = 0;
@@ -132,7 +132,7 @@ function makeChatWindowVisible() {
 
 function try1() {
     var data = {
-        "function": "register",
+        "function": "startRepoEx",
         "ip": ip_adress
     };
     makeAjaxCall(API_URL, data);
