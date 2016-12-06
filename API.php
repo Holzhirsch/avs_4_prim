@@ -51,7 +51,6 @@ class API {
      * Sends the needed data to the requested functions.
      */
     private function startFunction() {
-        Utils::e("Start function: " . $this->function);
         switch ($this->function) {
             case "setMessage":
                 $chat = $this->getChatService();
@@ -90,12 +89,12 @@ class API {
                 $sercom->setMessageFromServer($ip, $chat_room, $message);
                 break;
             case "pingOnline":
-                $sercom = $this->startServerCom();
-                return $sercom->setPingOnline($this->ping_msg);
+                $r = ["online"];
+                $this->sendJsonResponse(["response" => $r]);
                 break;
             case "pingNewRepo":
                 $sercom = $this->startServerCom();
-                $sercom->setPingOnline($this->ping_msg);
+                $sercom->getIPsFromRepo();
                 break;
             case "startRepoEx":
                 $this->startServerCom()->startRepoExchange();

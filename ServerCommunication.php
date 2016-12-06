@@ -30,7 +30,7 @@ class ServerCommunication {
             $this->sendIPToRepo();
             $this->getIPsFromRepo();
             $this->CheckIPsInRepo();
-            $this->NotifyServersAboutNewRepo();
+//            $this->NotifyServersAboutNewRepo();
         }
     }
 
@@ -42,7 +42,6 @@ class ServerCommunication {
             $url = "http://" . $entry[0] . "/AVS_3/API.php";
 
             $msg = [
-                "ping_msg" => "newRepo",
                 "function" => "pingNewRepo"
             ];
             $this->connect($msg, true, $url);
@@ -57,10 +56,10 @@ class ServerCommunication {
         $this->connect($data, false, $this->repo_Server_URL);
     }
 
-    public function removeIPFromRepo() {
+    public function removeIPFromRepo($ip) {
         $data = [
             'function' => 'unregister',
-            'ip_to_del' => $this->ip
+            'ip_to_del' => $ip
         ];
         $this->connect($data, false, $this->repo_Server_URL);
     }
@@ -122,22 +121,30 @@ class ServerCommunication {
     public function CheckIPsInRepo() {
 
         $entries = file($this->ip_repo_file);
-        foreach ($entries AS $line) {
-            $line = rtrim($line);
-            $entry = unserialize($line);
-            $url = "http://" . $entry[0] . "/AVS_3/API.php";
+        if (empty($entries)) {
+            Utils::e("Entries are empty.");
+        } else {
+            foreach ($entries AS $line) {
+                if (!empty($line)) {
+                    $line = rtrim($line);
+                    $entry = unserialize($line);
+                    $url = "http://" . $entry[0] . "/AVS_3/API.php";
 
-            $msg = [
-                "ping_msg" => "online",
-                "function" => "pingOnline"
-            ];
-            $response = $this->connect($msg, true, $url);
-            if ($response === "online") {
-                Utils::e($entry[0] . " is online");
-            } else {
-                $repo = new IPRepositoryService();
-                $repo->removeEntryFromFile($entry[0]);
-                $this->removeIPFromRepo($entry[0]);
+                    $msg = [
+                        "function" => "pingOnline"
+                    ];
+                    $response = $this->connect($msg, true, $url);
+                    if ($response === "online") {
+                        Utils::e($entry[0] . " is online");
+                    } else {
+                        Utils::e($entry[0] . " is not online");
+                        $repo = new IPRepositoryService();
+                        $repo->removeEntryFromFile($entry[0]);
+                        $this->removeIPFromRepo($entry[0]);
+                    }
+                } else {
+                    Utils::e("Line is empty: " . $line);
+                }
             }
         }
     }
