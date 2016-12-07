@@ -16,8 +16,7 @@ include "ServerCommunication.php";
  * info:
  * chmod 777 folder
  *
- *  change repo_server_url 
- *  in api.php and chat.js for all servers
+ *  change repo_server_url and ip in Utils.php and chat.js for all servers
  *  update run configs
  * 
  */
@@ -34,7 +33,7 @@ class API {
 
     public function __construct() {
         $this->function = $_POST["function"] ?? null;
-        $this->ip = $_POST["ip"] ?? null;
+        $this->ip = $_POST["ip"] ?? Utils::$server_ip;
         $this->chat_message = isset($_POST["chat_message"]) ? urldecode($_POST["chat_message"]) : null;
         $this->chat_room = $_POST["chat_room"] ?? null;
         isset($_POST["last_msg"]) AND $this->last_msg = intval($_POST["last_msg"]);

@@ -8,6 +8,10 @@
  */
 class Utils {
 
+    public static $server_ip = "192.168.0.11";
+    public static $repo_server_url = "http://192.168.0.11/AVS_3/API.php";
+    
+    
     /**
      * Echo debug message.
      * @param type $text

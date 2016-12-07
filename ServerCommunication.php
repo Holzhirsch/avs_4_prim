@@ -30,7 +30,7 @@ class ServerCommunication {
             $this->sendIPToRepo();
             $this->getIPsFromRepo();
             $this->CheckIPsInRepo();
-//            $this->NotifyServersAboutNewRepo();
+            $this->NotifyServersAboutNewRepo();
         }
     }
 
@@ -44,7 +44,7 @@ class ServerCommunication {
             $msg = [
                 "function" => "pingNewRepo"
             ];
-            $this->connect($msg, true, $url);
+            $this->connect($msg, false, $url);
         }
     }
 
