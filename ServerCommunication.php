@@ -102,6 +102,20 @@ class ServerCommunication {
          * get ips from ipFile and send message to servers in list with ip of client
          * 
          */
+        $entries = file($this->ip_repo_file);
+        foreach ($entries AS $line) {
+            $line = rtrim($line);
+            $entry = unserialize($line);
+            $url = "http://" . $entry[0] . "/AVS_3/API.php";
+
+            $msg = [
+                "function" => "setMessage",
+                "chat_message" => $message,
+                "ip" => $ip, 
+                "chat_room" => $chat_room
+            ];
+            $this->connect($msg, false, $url);
+        }
     }
 
     public function setMessageFromServer($ip, $chat_room, $message) {
@@ -111,7 +125,8 @@ class ServerCommunication {
 
     public function createOwnRepo($repo_ips) {
         $repo = new IPRepositoryService();
-        foreach ($repo_ips as $ip) {
+        foreach ($repo_ips as $entry) {
+            Utils::e($entry . " ::: " . $this->ip);
             if ($entry !== $this->ip) {
                 $repo->register($entry);
             }

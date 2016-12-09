@@ -43,6 +43,8 @@ class API {
     }
 
     public function start() {
+        $ip = !empty($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
+        Utils::e("ip_by_host: " .$ip);
         $this->startFunction();
     }
 
@@ -54,6 +56,9 @@ class API {
             case "setMessage":
                 $chat = $this->getChatService();
                 $chat->setMessage($this->chat_message);
+                
+                $sercom = $this->startServerCom();
+                $sercom->sendMessageToServers($this->ip, $this->chat_room, $this->chat_message);
                 break;
             case "getUpdate":
                 $chat = $this->getChatService();
