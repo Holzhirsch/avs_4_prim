@@ -70,7 +70,7 @@ class ServerCommunication {
                 if (!empty($line)) {
 //                    $line = rtrim($line);
 //                    $entry = unserialize($line);
-                    $this->repo_service->getDecodedEntry($line);
+                    $entry = $this->repo_service->getDecodedEntry($line);
                     $url = "http://" . $entry[0] . "/AVS_3/API.php";
 
                     $response = $this->connect($msg, true, $url);
@@ -101,7 +101,7 @@ class ServerCommunication {
         foreach ($entries AS $line) {
 //            $line = rtrim($line);
 //            $entry = unserialize($line);
-            $this->repo_service->getDecodedEntry($line);
+            $entry = $this->repo_service->getDecodedEntry($line);
             $url = "http://" . $entry[0] . "/AVS_3/API.php";
 
             $msg = [
@@ -145,7 +145,7 @@ class ServerCommunication {
         foreach ($entries AS $line) {
 //            $line = rtrim($line);
 //            $entry = unserialize($line);
-            $this->repo_service->getDecodedEntry($line);
+            $entry = $this->repo_service->getDecodedEntry($line);
             $url = "http://" . $entry[0] . "/AVS_3/API.php";
 
             $msg = [

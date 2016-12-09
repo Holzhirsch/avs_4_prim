@@ -33,7 +33,6 @@ class ChatService {
         Utils::getLock($this->chat_room_file);
         $this->writeMessageToChatRoomFile($line);
         Utils::releaseLock($this->chat_room_file);
-        $this->sendMessageToOtherChatServers($message);
         Utils::e("success, message:" . $message . " was sent.");
     }
 
@@ -95,11 +94,6 @@ class ChatService {
 
     private function incrementMessageNr() {
         $this->message_nr += 1;
-    }
-
-    public function sendMessageToOtherChatServers($message) {
-        $sercom = new ServerCommunication();
-        $sercom->sendMessageToServers($this->ip, $message);
     }
 
 }

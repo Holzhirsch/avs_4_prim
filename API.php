@@ -35,8 +35,6 @@ class API {
     private $ip_Repo = null;
 
     public function __construct() {
-        Utils::e("Init class: " . __CLASS__);
-
         $this->config = New ServerConfig();
         $this->i_am_repo_server = $this->config->getIsRepoServer();
         $this->this_server_ip = $this->config->getThisServerIp();
@@ -55,8 +53,7 @@ class API {
      * Sends the needed data to the requested functions.
      */
     public function startFunction() {
-        Utils::e("Start method: " . __METHOD__ . " in class: " . __CLASS__);
-
+        Utils::e("Start method: " . __METHOD__);
         Utils::e("start Post_function:" . $this->function);
         switch ($this->function) {
             case "setMessage":
@@ -76,7 +73,7 @@ class API {
                 break;
             case "register":
                 if ($this->i_am_repo_server) {
-                    $this->ip_Repo->register($this->this_server_ip);
+                    $this->ip_Repo->register($this->client_ip);
                 } else {
                     $sercom = $this->startServerCom();
                     $sercom->sendIPToRepo();
@@ -90,7 +87,8 @@ class API {
                 $this->sendJsonResponse(["response" => $reg_ips]);
                 break;
             case "pingOnline":
-                $this->sendJsonResponse(["response" => ["online"]]);
+                $response = "online";
+                $this->sendJsonResponse(["response" => $response]);
                 break;
             case "pingNewRepo":
                 $sercom = $this->startServerCom();
@@ -106,26 +104,18 @@ class API {
     }
 
     private function getChatService() {
-        Utils::e("Start method: " . __METHOD__ . " in class: " . __CLASS__);
-
         return new ChatService($this->chat_room, $this->client_ip);
     }
 
     private function getIPRepositoryService() {
-        Utils::e("Start method: " . __METHOD__ . " in class: " . __CLASS__);
-
         return new IPRepositoryService();
     }
 
     private function sendJsonResponse($array) {
-        Utils::e("Start method: " . __METHOD__ . " in class: " . __CLASS__);
-
         echo json_encode($array);
     }
 
     private function startServerCom() {
-        Utils::e("Start method: " . __METHOD__ . " in class: " . __CLASS__);
-
         return new ServerCommunication();
     }
 
