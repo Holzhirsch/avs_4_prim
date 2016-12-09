@@ -28,32 +28,10 @@ class ServerCommunication {
         }
     }
 
-    public function NotifyServersAboutNewRepo() {
-        $entries = file($this->ip_repo_file);
-        foreach ($entries AS $line) {
-            $line = rtrim($line);
-            $entry = unserialize($line);
-            $url = "http://" . $entry[0] . "/AVS_3/API.php";
-
-            $msg = [
-                "function" => "pingNewRepo"
-            ];
-            $this->connect($msg, false, $url);
-        }
-    }
-
     public function sendIPToRepo() {
         $data = [
             'function' => 'register',
             'ip' => $this->this_server_ip
-        ];
-        $this->connect($data, false, $this->repo_Server_URL);
-    }
-
-    public function removeIPFromRepo($ip) {
-        $data = [
-            'function' => 'unregister',
-            'ip_to_del' => $ip
         ];
         $this->connect($data, false, $this->repo_Server_URL);
     }
@@ -64,52 +42,6 @@ class ServerCommunication {
         ];
         $repo_ips = $this->connect($data, true, $this->repo_Server_URL);
         $this->createOwnRepo($repo_ips);
-    }
-
-    public function connect($data, $b_get_response, $url) {
-        $URL = $url;
-
-        $request = new HTTP_Request2($URL);
-        $request->setMethod(HTTP_Request2::METHOD_POST)
-                ->addPostParameter($data);
-
-        try {
-            $response = $request->send();
-            if (200 == $response->getStatus()) {
-                if ($b_get_response) {
-                    $temp = $response->getBody();
-                    $array = json_decode($temp)->response;
-                    return $array;
-                }
-            } else {
-                echo 'Unexpected HTTP status: ' . $response->getStatus();
-            }
-        } catch (HTTP_Request2_Exception $e) {
-            echo 'Error: ' . $e->getMessage();
-        }
-    }
-
-    public function sendMessageToServers($ip, $chat_room, $message) {
-        /**
-         * Implement here
-         * 
-         * get ips from ipFile and send message to servers in list with ip of client
-         * 
-         */
-        $entries = file($this->ip_repo_file);
-        foreach ($entries AS $line) {
-            $line = rtrim($line);
-            $entry = unserialize($line);
-            $url = "http://" . $entry[0] . "/AVS_3/API.php";
-
-            $msg = [
-                "function" => "setMessage",
-                "chat_message" => $message,
-                "ip" => $ip,
-                "chat_room" => $chat_room
-            ];
-            $this->connect($msg, false, $url);
-        }
     }
 
     public function createOwnRepo($repo_ips) {
@@ -153,12 +85,71 @@ class ServerCommunication {
         }
     }
 
-    public function setPing($ping_msg) {
-        if ($ping_msg === "online") {
-            return "online";
+    public function removeIPFromRepo($ip) {
+        $data = [
+            'function' => 'unregister',
+            'ip_to_del' => $ip
+        ];
+        $this->connect($data, false, $this->repo_Server_URL);
+    }
+
+    public function NotifyServersAboutNewRepo() {
+        $entries = file($this->ip_repo_file);
+        foreach ($entries AS $line) {
+            $line = rtrim($line);
+            $entry = unserialize($line);
+            $url = "http://" . $entry[0] . "/AVS_3/API.php";
+
+            $msg = [
+                "function" => "pingNewRepo"
+            ];
+            $this->connect($msg, false, $url);
         }
-        if ($ping_msg === "newRepo") {
-            $this->getIPsFromRepo();
+    }
+
+    public function connect($data, $b_get_response, $url) {
+        $URL = $url;
+
+        $request = new HTTP_Request2($URL);
+        $request->setMethod(HTTP_Request2::METHOD_POST)
+                ->addPostParameter($data);
+
+        try {
+            $response = $request->send();
+            if (200 == $response->getStatus()) {
+                if ($b_get_response) {
+                    $temp = $response->getBody();
+                    $array = json_decode($temp)->response;
+                    return $array;
+                }
+            } else {
+                echo 'Unexpected HTTP status: ' . $response->getStatus();
+            }
+        } catch (HTTP_Request2_Exception $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
+    }
+
+    public function sendMessageToServers($ip, $chat_room, $message) {
+        /**
+         * Implement here
+         * 
+         * get ips from ipFile and send message to servers in list with ip of client
+         * 
+         */
+        $entries = file($this->ip_repo_file);
+        foreach ($entries AS $line) {
+            $line = rtrim($line);
+            $entry = unserialize($line);
+            $url = "http://" . $entry[0] . "/AVS_3/API.php";
+
+            $msg = [
+                "function" => "setMessageFromServer",
+                "chat_message" => $message,
+                "ip" => $ip,
+                "chat_room" => $chat_room
+            ];
+            $this->connect($msg, false, $url);
         }
     }
 

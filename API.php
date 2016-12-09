@@ -65,6 +65,10 @@ class API {
                 $sercom = $this->startServerCom();
                 $sercom->sendMessageToServers($this->client_ip, $this->chat_room, $this->chat_message);
                 break;
+            case "setMessageFromServer":
+                $chat = $this->getChatService();
+                $chat->setMessage($this->chat_message);
+                break;
             case "getUpdate":
                 $chat = $this->getChatService();
                 $response = $chat->getUpdate($this->last_msg);
