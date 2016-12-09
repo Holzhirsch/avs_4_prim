@@ -41,8 +41,9 @@ class IPRepositoryService {
             return $response;
         }
         foreach ($entries AS $line) {
-            $line = rtrim($line);
-            $entry = unserialize($line);
+//            $line = rtrim($line);
+//            $entry = unserialize($line);
+            $entry = $this->getDecodedEntry($line);
             array_push($response, $entry[0]);
         }
         
@@ -55,9 +56,9 @@ class IPRepositoryService {
     public function ipInFile($ip) {
         $entries = file($this->ip_repo_file);
         foreach ($entries AS $line) {
-            $line = rtrim($line); //remove whitespace at end of string
-            $entry = unserialize($line);
-
+//            $line = rtrim($line); //remove whitespace at end of string
+//            $entry = unserialize($line);
+            $entry = $this->getDecodedEntry($line);
             if ($entry[0] === $ip) {
                 Utils::e("Entry: " . $ip . " is in file: " . $this->ip_repo_file);
                 return true;
@@ -69,7 +70,8 @@ class IPRepositoryService {
 
     public function addEntryToFile($ip) {
         Utils::e("Add entry: " . $ip . " to file: " . $this->ip_repo_file);
-        $entry = serialize([$ip]) . "\r\n";
+//        $entry = serialize([$ip]) . "\r\n";
+        $entry = $this->getEncodedEntry([$ip]);
         file_put_contents($this->ip_repo_file, $entry, FILE_APPEND);
     }
 
@@ -78,12 +80,21 @@ class IPRepositoryService {
         $entries = file($this->ip_repo_file);
         $this->file_handler->createFile($this->ip_repo_file);
         foreach ($entries AS $line) {
-            $line = rtrim($line);
-            $array = unserialize($line);
+//            $line = rtrim($line);
+//            $array = unserialize($line);
+            $array = $this->getDecodedEntry($line);
             if ($array[0] != $ip_to_del) {
                 $this->addEntryToFile($array[0]);
             }
         }
     }
 
+    public function getEncodedEntry($entry) {
+        return $this->file_handler->getEncodedLineFromEntry($entry);
+    }
+    
+    public function getDecodedEntry($entry) {
+        return $this->file_handler->getDecodedEntryFromLine($entry);
+    }
+    
 }
