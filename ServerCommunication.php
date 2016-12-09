@@ -4,29 +4,23 @@ include 'HTTP/Request2.php';
 
 class ServerCommunication {
 
+    private $config = null;
     private $I_AM_REPO = false;
-    private $repo_Server_URL = "http://192.168.0.11/AVS_3/API.php";
-    private $ip;
+    private $repo_Server_URL = null;
+    private $this_server_ip = null;
     private $ip_repo_file = "ipRepoFile";
 
-    public function __construct($ip, $is_repo_server) {
-        $this->ip = $ip;
-        $this->I_AM_REPO = $is_repo_server;
+    public function __construct() {
+        Utils::e("Init class: " . __CLASS__);
+
+        $this->config = New ServerConfig();
+        $this->this_server_ip = $this->config->getThisServerIp();
+        $this->I_AM_REPO = $this->config->getIsRepoServer();
+        $this->repo_Server_URL = $this->config->getRepoServerUrl();
     }
 
     public function startRepoExchange() {
-        /**
-         * get ips from reposerver
-         * safe ips
-         * ping ips
-         * get answer ("online") | no answer
-         *      send delete to reposerver for no answer
-         * 
-         * on getting pinged - send "online" and get ips from repo, but dont ping others again
-         */
-        if ($this->I_AM_REPO) {
-            
-        } else {
+        if (!$this->I_AM_REPO) {
             $this->sendIPToRepo();
             $this->getIPsFromRepo();
             $this->CheckIPsInRepo();
@@ -51,7 +45,7 @@ class ServerCommunication {
     public function sendIPToRepo() {
         $data = [
             'function' => 'register',
-            'ip' => $this->ip
+            'ip' => $this->this_server_ip
         ];
         $this->connect($data, false, $this->repo_Server_URL);
     }
@@ -111,23 +105,18 @@ class ServerCommunication {
             $msg = [
                 "function" => "setMessage",
                 "chat_message" => $message,
-                "ip" => $ip, 
+                "ip" => $ip,
                 "chat_room" => $chat_room
             ];
             $this->connect($msg, false, $url);
         }
     }
 
-    public function setMessageFromServer($ip, $chat_room, $message) {
-        $chat = new ChatService($chat_room, $ip);
-        $chat->setMessage($message);
-    }
-
     public function createOwnRepo($repo_ips) {
         $repo = new IPRepositoryService();
         foreach ($repo_ips as $entry) {
-            Utils::e($entry . " ::: " . $this->ip);
-            if ($entry !== $this->ip) {
+            Utils::e($entry . " ::: " . $this->this_server_ip);
+            if ($entry !== $this->this_server_ip) {
                 $repo->register($entry);
             }
         }

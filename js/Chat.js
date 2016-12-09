@@ -1,5 +1,6 @@
 
 var API_URL = "http://192.168.0.11/AVS_3/API.php";
+
 var chat_room = "";
 var ip_adress = "";
 var last_message = 0;
@@ -129,25 +130,9 @@ function makeChatWindowVisible() {
     document.getElementById("chat").style.display = "block";
 }
 
-
-function try1() {
+function startServerExchange() {
     var data = {
         "function": "startRepoEx",
-        "ip": ip_adress
-    };
-    makeAjaxCall(API_URL, data);
-}
-function try2() {
-    var data = {
-        "function": "unregister",
-        "ip": ip_adress,
-        "ip_to_del" : ip_adress
-    };
-    makeAjaxCall(API_URL, data);
-}
-function try3() {
-    var data = {
-        "function": "query",
         "ip": ip_adress
     };
     makeAjaxCall(API_URL, data);

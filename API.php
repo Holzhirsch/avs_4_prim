@@ -1,6 +1,7 @@
 <?php
 
 include "Utils.php";
+include "ServerConfig.php";
 include "FileHandler.php";
 include "ChatService.php";
 include "IPRepositoryService.php";
@@ -22,43 +23,47 @@ include "ServerCommunication.php";
  */
 class API {
 
-    private $I_AM_REPO = true;
+    private $i_am_repo_server = false;
     private $function = null;
-    private $ip = null;
+    private $client_ip = null;
+    private $this_server_ip = null;
     private $chat_room = null;
     private $chat_message = null;
     private $last_msg = 0;
     private $ip_to_del = null;
-    private $ping_msg = null;
+    private $config = null;
+    private $ip_Repo = null;
 
     public function __construct() {
+        Utils::e("Init class: " . __CLASS__);
+
+        $this->config = New ServerConfig();
+        $this->i_am_repo_server = $this->config->getIsRepoServer();
+        $this->this_server_ip = $this->config->getThisServerIp();
+
+        $this->client_ip = $_POST["ip"] ?? $this->config->getThisServerIp();
         $this->function = $_POST["function"] ?? null;
-        $this->ip = $_POST["ip"] ?? Utils::$server_ip;
         $this->chat_message = isset($_POST["chat_message"]) ? urldecode($_POST["chat_message"]) : null;
         $this->chat_room = $_POST["chat_room"] ?? null;
         isset($_POST["last_msg"]) AND $this->last_msg = intval($_POST["last_msg"]);
-
         $this->ip_to_del = $_POST["ip_to_del"] ?? null;
-        $this->ping_msg = $_POST["ping"] ?? null;
-    }
 
-    public function start() {
-        $ip = !empty($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
-        Utils::e("ip_by_host: " .$ip);
-        $this->startFunction();
+        $this->ip_Repo = $this->getIPRepositoryService();
     }
 
     /**
      * Sends the needed data to the requested functions.
      */
-    private function startFunction() {
+    public function startFunction() {
+        Utils::e("Start method: " . __METHOD__ . " in class: " . __CLASS__);
+
+        Utils::e("start Post_function:" . $this->function);
         switch ($this->function) {
             case "setMessage":
                 $chat = $this->getChatService();
                 $chat->setMessage($this->chat_message);
-                
                 $sercom = $this->startServerCom();
-                $sercom->sendMessageToServers($this->ip, $this->chat_room, $this->chat_message);
+                $sercom->sendMessageToServers($this->client_ip, $this->chat_room, $this->chat_message);
                 break;
             case "getUpdate":
                 $chat = $this->getChatService();
@@ -66,62 +71,58 @@ class API {
                 $this->sendJsonResponse($response);
                 break;
             case "register":
-                if ($this->I_AM_REPO) {
-                    $ipRepo = $this->getIPRepositoryService();
-                    $ipRepo->register($this->ip);
+                if ($this->i_am_repo_server) {
+                    $this->ip_Repo->register($this->this_server_ip);
                 } else {
                     $sercom = $this->startServerCom();
                     $sercom->sendIPToRepo();
                 }
                 break;
             case "unregister":
-                if ($this->I_AM_REPO) {
-                    $ipRepo = $this->getIPRepositoryService();
-                    $ipRepo->unregister($this->ip_to_del);
-                } else {
-                    $sercom = $this->startServerCom();
-                    $sercom->removeIPFromRepo();
-                }
+                $this->ip_Repo->unregister($this->ip_to_del);
                 break;
             case "query":
-                $ipRepo = $this->getIPRepositoryService();
-                $reg_ips = $ipRepo->query();
+                $reg_ips = $this->ip_Repo->query();
                 $this->sendJsonResponse(["response" => $reg_ips]);
                 break;
-            case "setMessageServer":
-                $sercom = $this->startServerCom();
-                $sercom->setMessageFromServer($ip, $chat_room, $message);
-                break;
             case "pingOnline":
-                $r = ["online"];
-                $this->sendJsonResponse(["response" => $r]);
+                $this->sendJsonResponse(["response" => ["online"]]);
                 break;
             case "pingNewRepo":
                 $sercom = $this->startServerCom();
                 $sercom->getIPsFromRepo();
                 break;
             case "startRepoEx":
-                $this->startServerCom()->startRepoExchange();
+                $sercom = $this->startServerCom();
+                $sercom->startRepoExchange();
                 break;
             default :
-                throw new Exception("No such function: '" . $this->function . "' exits!");
+                Utils::e("No such function: '" . $this->function . "' exists!");
         }
     }
 
     private function getChatService() {
-        return new ChatService($this->chat_room, $this->ip);
+        Utils::e("Start method: " . __METHOD__ . " in class: " . __CLASS__);
+
+        return new ChatService($this->chat_room, $this->client_ip);
     }
 
     private function getIPRepositoryService() {
+        Utils::e("Start method: " . __METHOD__ . " in class: " . __CLASS__);
+
         return new IPRepositoryService();
     }
 
     private function sendJsonResponse($array) {
+        Utils::e("Start method: " . __METHOD__ . " in class: " . __CLASS__);
+
         echo json_encode($array);
     }
 
-    public function startServerCom() {
-        return new ServerCommunication($this->ip, $this->I_AM_REPO);
+    private function startServerCom() {
+        Utils::e("Start method: " . __METHOD__ . " in class: " . __CLASS__);
+
+        return new ServerCommunication();
     }
 
 }
@@ -131,5 +132,5 @@ class API {
  */
 if (!empty($_POST)) {
     $api = new API();
-    $api->start();
+    $api->startFunction();
 }

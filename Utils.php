@@ -8,10 +8,6 @@
  */
 class Utils {
 
-    public static $server_ip = "192.168.0.11";
-    public static $repo_server_url = "http://192.168.0.11/AVS_3/API.php";
-    
-    
     /**
      * Echo debug message.
      * @param type $text
@@ -22,7 +18,7 @@ class Utils {
         $bt = debug_backtrace(1);
         $caller = $bt[1];
         $msg = "[DEBUG]_F[" . $caller['file'] . "]_C[" . $count . "]_L[" . $caller['line'] . "]: " . $text . "<br>";
-        if(!file_exists("log")) {
+        if (!file_exists("log")) {
             $handle = fopen("log", "w+");
         }
         $handle = fopen("log", "a");
@@ -38,7 +34,7 @@ class Utils {
                 $try = false;
                 Utils::e("got lock on: " . $file_name);
             } else {
-                usleep(500000);
+                usleep(100000);
             }
         }
     }
@@ -50,7 +46,7 @@ class Utils {
 
     public static function releaseLock($file_name) {
         unlink($file_name . "lock");
-        Utils::e(" released lock on: " . $file_name);
+        Utils::e("released lock on: " . $file_name);
     }
 
 }

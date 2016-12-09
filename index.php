@@ -16,9 +16,7 @@
                 <button class='btn' onclick='sendMessage()'>Send</button>
             </div>
             <div id='output'></div>
-            <button class='btn' onclick='try1()'>1</button>
-            <button class='btn' onclick='try2()'>2</button>
-            <button class='btn' onclick='try3()'>3</button>
+            <button class='btn' onclick='startServerExchange()'>1</button>
         </div>
 
         <script type='text/javascript' src='js/Ajax.js'></script>
