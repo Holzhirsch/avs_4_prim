@@ -53,7 +53,6 @@ class API {
      * Sends the needed data to the requested functions.
      */
     public function startFunction() {
-        Utils::e("Start method: " . __METHOD__);
         Utils::e("start Post_function:" . $this->function);
         switch ($this->function) {
             case "setMessage":
@@ -73,7 +72,7 @@ class API {
                 break;
             case "register":
                 if ($this->i_am_repo_server) {
-                    $this->ip_Repo->register($this->client_ip);
+                    $this->ip_Repo->register($this->this_server_ip);
                 } else {
                     $sercom = $this->startServerCom();
                     $sercom->sendIPToRepo();
