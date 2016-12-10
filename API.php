@@ -23,10 +23,8 @@ include "ServerCommunication.php";
  */
 class API {
 
-    private $i_am_repo_server = false;
     private $function = null;
     private $client_ip = null;
-    private $this_server_ip = null;
     private $chat_room = null;
     private $chat_message = null;
     private $last_msg = 0;
@@ -36,16 +34,13 @@ class API {
 
     public function __construct() {
         $this->config = New ServerConfig();
-        $this->i_am_repo_server = $this->config->getIsRepoServer();
-        $this->this_server_ip = $this->config->getThisServerIp();
-
+        
         $this->client_ip = $_POST["ip"] ?? $this->config->getThisServerIp();
         $this->function = $_POST["function"] ?? null;
         $this->chat_message = isset($_POST["chat_message"]) ? urldecode($_POST["chat_message"]) : null;
         $this->chat_room = $_POST["chat_room"] ?? null;
         isset($_POST["last_msg"]) AND $this->last_msg = intval($_POST["last_msg"]);
         $this->ip_to_del = $_POST["ip_to_del"] ?? null;
-
         $this->ip_Repo = $this->getIPRepositoryService();
     }
 
@@ -71,12 +66,7 @@ class API {
                 $this->sendJsonResponse($response);
                 break;
             case "register":
-                if ($this->i_am_repo_server) {
-                    $this->ip_Repo->register($this->this_server_ip);
-                } else {
-                    $sercom = $this->startServerCom();
-                    $sercom->sendIPToRepo();
-                }
+                $this->ip_Repo->register($this->client_ip);
                 break;
             case "unregister":
                 $this->ip_Repo->unregister($this->ip_to_del);
