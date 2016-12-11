@@ -132,8 +132,7 @@ function makeChatWindowVisible() {
 
 function startServerExchange() {
     var data = {
-        "function": "startRepoEx",
-        "ip": ip_adress
+        "function": "startRepoEx"
     };
     makeAjaxCall(API_URL, data);
 }

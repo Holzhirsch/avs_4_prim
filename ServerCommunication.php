@@ -8,7 +8,6 @@ class ServerCommunication {
     private $I_AM_REPO = false;
     private $repo_Server_URL = null;
     private $this_server_ip = null;
-    private $ip_repo_file = "ipRepoFile";
     private $repo_service = null;
 
     public function __construct() {

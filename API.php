@@ -36,7 +36,7 @@ class API {
         $this->config = New ServerConfig();
         
         $this->client_ip = $_POST["ip"] ?? $this->config->getThisServerIp();
-        $this->function = $_POST["function"] ?? null;
+        $this->function = $_GET["function"] ?? ($_POST["function"] ?? null);
         $this->chat_message = isset($_POST["chat_message"]) ? urldecode($_POST["chat_message"]) : null;
         $this->chat_room = $_POST["chat_room"] ?? null;
         isset($_POST["last_msg"]) AND $this->last_msg = intval($_POST["last_msg"]);
@@ -113,7 +113,7 @@ class API {
 /**
  * START OF SCRIPT 
  */
-if (!empty($_POST)) {
+if (!empty($_POST) || !empty($_GET)) {
     $api = new API();
     $api->startFunction();
 }
