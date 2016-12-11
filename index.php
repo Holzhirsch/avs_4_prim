@@ -19,7 +19,7 @@
             <button class='btn' onclick='startServerExchange()'>1</button>
             <div>
                 Start Server_Repo_Exchange: <br>
-                http://192.168.0.11/AVS_3/API.php?function=startRepoEx
+                http://192.168.0.11/AVS_4/API.php?function=startRepoEx
             </div>
         </div>
 
