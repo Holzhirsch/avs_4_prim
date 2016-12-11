@@ -8,6 +8,10 @@ class IPRepositoryService {
     public function __construct() {
         $this->file_handler = new FileHandler();
         $this->CreateFileIfNotExists();
+        $config = new ServerConfig();
+        if (!$config->getIsRepoServer()) {
+            $this->register($config->repo_server_ip);
+        }
     }
 
     private function CreateFileIfNotExists() {

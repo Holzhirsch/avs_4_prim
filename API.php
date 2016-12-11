@@ -2,8 +2,8 @@
 
 include "Utils.php";
 include "ServerConfig.php";
+include "processNumber.php";
 include "FileHandler.php";
-include "ChatService.php";
 include "IPRepositoryService.php";
 include "ServerCommunication.php";
 
@@ -25,23 +25,19 @@ class API {
 
     private $function = null;
     private $client_ip = null;
-    private $chat_room = null;
-    private $chat_message = null;
-    private $last_msg = 0;
     private $ip_to_del = null;
     private $config = null;
     private $ip_Repo = null;
+    private $number = null;
 
     public function __construct() {
         $this->config = New ServerConfig();
         
         $this->client_ip = $_POST["ip"] ?? $this->config->getThisServerIp();
         $this->function = $_GET["function"] ?? ($_POST["function"] ?? null);
-        $this->chat_message = isset($_POST["chat_message"]) ? urldecode($_POST["chat_message"]) : null;
-        $this->chat_room = $_POST["chat_room"] ?? null;
-        isset($_POST["last_msg"]) AND $this->last_msg = intval($_POST["last_msg"]);
         $this->ip_to_del = $_POST["ip_to_del"] ?? null;
         $this->ip_Repo = $this->getIPRepositoryService();
+        $this->number = $_POST["number"] ?? null;
     }
 
     /**
@@ -50,20 +46,10 @@ class API {
     public function startFunction() {
         Utils::e("start Post_function:" . $this->function);
         switch ($this->function) {
-            case "setMessage":
-                $chat = $this->getChatService();
-                $chat->setMessage($this->chat_message);
-                $sercom = $this->startServerCom();
-                $sercom->sendMessageToServers($this->client_ip, $this->chat_room, $this->chat_message);
-                break;
-            case "setMessageFromServer":
-                $chat = $this->getChatService();
-                $chat->setMessage($this->chat_message);
-                break;
-            case "getUpdate":
-                $chat = $this->getChatService();
-                $response = $chat->getUpdate($this->last_msg);
-                $this->sendJsonResponse($response);
+            case "processNumber":
+                Utils::e(" process Number: " . $this->number);
+                $process = new processNumber($this->number);
+                $process->process();
                 break;
             case "register":
                 $this->ip_Repo->register($this->client_ip);
@@ -90,10 +76,6 @@ class API {
             default :
                 Utils::e("No such function: '" . $this->function . "' exists!");
         }
-    }
-
-    private function getChatService() {
-        return new ChatService($this->chat_room, $this->client_ip);
     }
 
     private function getIPRepositoryService() {

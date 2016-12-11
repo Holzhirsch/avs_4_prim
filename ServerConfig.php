@@ -10,7 +10,7 @@ class ServerConfig {
     private $this_server_ip = "192.168.0.11";
     private $this_server_is_repo_server = true;
     
-    private $repo_server_ip = "192.168.0.11";
+    public $repo_server_ip = "192.168.0.11";
     private $repo_server_url = "";
 
     public function __construct() {
