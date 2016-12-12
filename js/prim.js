@@ -32,3 +32,10 @@ function sendInt() {
     makeAjaxCall(API_URL, data);
 //    getUpdateResponse();
 }
+
+function startServerExchange() {
+    var data = {
+        "function": "startRepoEx"
+    };
+    makeAjaxCall(API_URL, data);
+}

@@ -14,7 +14,7 @@ class ServerConfig {
     private $repo_server_url = "";
 
     public function __construct() {
-        $this->repo_server_url = "http://" . $this->repo_server_ip . "/AVS_3/API.php";
+        $this->repo_server_url = "http://" . $this->repo_server_ip . "/AVS_4/API.php";
     }
 
     public function getThisServerIp() {
