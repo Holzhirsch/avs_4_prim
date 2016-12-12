@@ -25,8 +25,10 @@ class processNumber {
         $server_ips = $this->getServer();
         $num_server = $this->getServerNumber($server_ips);
         $range = $this->getNumbersPerServer($num_server);
-        $results = $this->SendToServers($server_ips, $range);
-        $this->processResult($results);
+//        $results = $this->SendToServers($server_ips, $range);
+//        $this->processResult($results);
+        $this->processNumbers($range[0]);
+
     }
 
     public function getServerNumber($server_ips) {
@@ -39,13 +41,13 @@ class processNumber {
         $range = [];
 
         if ($this->number < $num_server) {
-            $range = [[1, $this->number]];
+            $range = [[1, $this->number - 1]];
             print_r($range);
             return $range;
         }
 
-        $rest = $this->number % $num_server;
-        $num_without_rest = $this->number - $rest;
+        $rest = ($this->number - 1) % $num_server;
+        $num_without_rest = ($this->number - 1) - $rest;
         $per_server = intval($num_without_rest / $num_server);
         
         for ($i = 0; $i < $num_without_rest;) {
@@ -56,7 +58,7 @@ class processNumber {
             } else {
                 $end = $i;
             }
-            $server_range = [$start, $end];
+            $server_range = [$start, $end, $this->number];
             array_push($range, $server_range);
         }
         return $range;
@@ -87,11 +89,24 @@ class processNumber {
         print_r($array);
         $start = $array[0];
         $end = $array[1];
+        $to_test = $array[2];
         for($result = $start; $end > $start; --$end) {
-            $result += $end;
+            $x = $end;
+            --$end;
+            $y = $end;
+            
+            $z = $this->getModuloOfPair($x, $y, $to_test);
+            echo "x: " . $x . " y:" . $y . " z:" .$z;
+            $result = ($result % $to_test) * $z;
         }
-        echo "result: " . $result;
-        return $result;
+        echo "result: " . $result % $to_test;
+        return $result % $to_test;
+    }
+    
+    private function getModuloOfPair($x, $y, $z) {
+        $tmp = $x * $y;
+        $tmp = $tmp % $z;
+        return $tmp;
     }
 
     public function getServer() {
