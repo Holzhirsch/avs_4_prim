@@ -76,9 +76,8 @@ class API {
                 break;
             case "processPrime":
                 $process = new processNumber($this->number);
-                $process->processNumbers($this->data);
-                $response = "online" . implode(",", $this->data);
-                $this->sendJsonResponse(["response" => $response]);
+                $result = $process->processNumbers($this->data);
+                $this->sendJsonResponse(["response" => $result]);
                 break;
             default :
                 Utils::e("No such function: '" . $this->function . "' exists!");

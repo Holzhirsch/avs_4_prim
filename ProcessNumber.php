@@ -25,9 +25,9 @@ class processNumber {
         $server_ips = $this->getServer();
         $num_server = $this->getServerNumber($server_ips);
         $range = $this->getNumbersPerServer($num_server);
-//        $results = $this->SendToServers($server_ips, $range);
-//        $this->processResult($results);
-        $this->processNumbers($range[0]);
+        $results = $this->SendToServers($server_ips, $range);
+        $this->processResult($results);
+//        $this->processNumbers($range[0]);
 
     }
 
@@ -82,7 +82,11 @@ class processNumber {
     }
 
     public function processResult($result_array) {
-        print_r($result_array);
+        $result = 0;
+        foreach ($result_array as $value) {
+            $result *= $value;
+        }
+        echo $result % $this->number;
     }
     
     public function processNumbers($array) {
@@ -96,10 +100,10 @@ class processNumber {
             $y = $end;
             
             $z = $this->getModuloOfPair($x, $y, $to_test);
-            echo "x: " . $x . " y:" . $y . " z:" .$z;
+//            echo "x: " . $x . " y:" . $y . " z:" .$z;
             $result = ($result % $to_test) * $z;
         }
-        echo "result: " . $result % $to_test;
+//        echo "result: " . $result % $to_test;
         return $result % $to_test;
     }
     
