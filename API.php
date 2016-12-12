@@ -2,10 +2,10 @@
 
 include "Utils.php";
 include "ServerConfig.php";
-include "processNumber.php";
 include "FileHandler.php";
 include "IPRepositoryService.php";
 include "ServerCommunication.php";
+include "ProcessNumber.php";
 
 /**
  * @author era
@@ -38,6 +38,7 @@ class API {
         $this->ip_to_del = $_POST["ip_to_del"] ?? null;
         $this->ip_Repo = $this->getIPRepositoryService();
         $this->number = $_POST["number"] ?? null;
+        $this->data = $_POST["data"] ?? null;
     }
 
     /**
@@ -72,6 +73,10 @@ class API {
             case "startRepoEx":
                 $sercom = $this->startServerCom();
                 $sercom->startRepoExchange();
+                break;
+            case "processPrime":
+                $response = "online" . implode(",", $this->data);
+                $this->sendJsonResponse(["response" => $response]);
                 break;
             default :
                 Utils::e("No such function: '" . $this->function . "' exists!");
