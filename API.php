@@ -75,6 +75,8 @@ class API {
                 $sercom->startRepoExchange();
                 break;
             case "processPrime":
+                $process = new processNumber($this->number);
+                $process->processNumbers($this->data);
                 $response = "online" . implode(",", $this->data);
                 $this->sendJsonResponse(["response" => $response]);
                 break;

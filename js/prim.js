@@ -19,10 +19,8 @@ function sendInt() {
         console.log("not a number we want");
         return;
     }
-    if(num <= 0) {
-        console.log("is 0 now prime or not...questiuon for the mathematiciancs, but not for us.\n\
-        und negative Primzahlen - wirklich? Nicht in unserem Universum.");
-        return;
+    if(num <= 1) {
+        return 1;
     }
     console.log(num);
     var data = {

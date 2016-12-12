@@ -82,6 +82,17 @@ class processNumber {
     public function processResult($result_array) {
         print_r($result_array);
     }
+    
+    public function processNumbers($array) {
+        print_r($array);
+        $start = $array[0];
+        $end = $array[1];
+        for($result = $start; $end > $start; --$end) {
+            $result += $end;
+        }
+        echo "result: " . $result;
+        return $result;
+    }
 
     public function getServer() {
         $entries = $this->repo_service->getFileEntries();
