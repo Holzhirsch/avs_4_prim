@@ -8,17 +8,11 @@
 class processNumber {
 
     private $number = null;
-    private $ip_repo_file = "ipRepoFile";
     private $repo_service = null;
 
     public function __construct($number) {
         $this->number = $number;
         $this->repo_service = new IPRepositoryService();
-        if($this->number === 1) {
-            // really, is one prime or not...
-            //TODO
-            
-        }
     }
 
     public function process() {
@@ -42,7 +36,6 @@ class processNumber {
 
         if ($this->number < $num_server) {
             $range = [[1, $this->number - 1]];
-            print_r($range);
             return $range;
         }
 
@@ -75,22 +68,22 @@ class processNumber {
                 "data" => $range[$i]
             ];
             $response = $sercom->connect($data, true, $url);
-            echo "response: " . $response;
+            Utils::e(print_r($response, true));
             array_push($result_array, $response);
         }
         return $result_array;
     }
 
     public function processResult($result_array) {
-        $result = 0;
+        $result = 1;
         foreach ($result_array as $value) {
-            $result *= $value;
+            Utils::e("value: " .$value);
+            $result = ($result % $this->number)* intval($value);
         }
-        echo $result % $this->number;
+        Utils::e("total result: " .$result % $this->number);
     }
     
     public function processNumbers($array) {
-        print_r($array);
         $start = $array[0];
         $end = $array[1];
         $to_test = $array[2];
@@ -100,10 +93,9 @@ class processNumber {
             $y = $end;
             
             $z = $this->getModuloOfPair($x, $y, $to_test);
-//            echo "x: " . $x . " y:" . $y . " z:" .$z;
             $result = ($result % $to_test) * $z;
         }
-//        echo "result: " . $result % $to_test;
+        Utils::e("result of processed numbers: " .$result % $to_test);
         return $result % $to_test;
     }
     
