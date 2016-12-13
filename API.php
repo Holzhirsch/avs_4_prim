@@ -32,7 +32,7 @@ class API {
 
     public function __construct() {
         $this->config = New ServerConfig();
-        
+
         $this->client_ip = $_POST["ip"] ?? $this->config->getThisServerIp();
         $this->function = $_GET["function"] ?? ($_POST["function"] ?? null);
         $this->ip_to_del = $_POST["ip_to_del"] ?? null;
@@ -50,7 +50,8 @@ class API {
             case "processNumber":
                 Utils::e(" process Number: " . $this->number);
                 $process = new processNumber($this->number);
-                $process->process();
+                $result = $process->process();
+                $this->sendJsonResponse(["response" => $result]);
                 break;
             case "register":
                 $this->ip_Repo->register($this->client_ip);

@@ -10,17 +10,18 @@ function makeAjaxCall(URL, data) {
 function getUpdateResponse() {
     var response = receivedObj.response;
     console.log(response);
-    return response;
+    writeResult(response);
 }
 
 function sendInt() {
     var num = parseInt(document.getElementById('value').value);
-    if(!Number.isInteger(num)) {
+    if (!Number.isInteger(num)) {
         console.log("not a number we want");
         return;
     }
-    if(num <= 1) {
-        return 1;
+    if (num <= 2) {
+        writeResult(1);
+        return;
     }
     console.log(num);
     var data = {
@@ -28,7 +29,13 @@ function sendInt() {
         "number": num
     };
     makeAjaxCall(API_URL, data);
-//    getUpdateResponse();
+    getUpdateResponse();
+}
+
+function writeResult(res) {
+    var objDiv = document.getElementById("result");
+    objDiv.innerHTML = "";
+    objDiv.innerHTML = "result:" + res;
 }
 
 function startServerExchange() {

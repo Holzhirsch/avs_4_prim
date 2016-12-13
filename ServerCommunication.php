@@ -58,7 +58,7 @@ class ServerCommunication {
             Utils::e("Entries are empty.");
             return;
         }
-        
+
         foreach ($entries AS $line) {
             $entry = $this->repo_service->getDecodedEntry($line);
             $url = "http://" . $entry[0] . "/AVS_3/API.php";

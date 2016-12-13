@@ -9,7 +9,7 @@
         <div id='wrapper'>
             <input type="text" name="value" id='value' />
             <input type="button" value="submit" onclick="sendInt()" />
-
+            <div id='result'></div>
             <div id='output'></div>
             <button class='btn' onclick='startServerExchange()'>1</button>
             <div>
@@ -20,6 +20,6 @@
 
         <script type='text/javascript' src='js/Ajax.js'></script>
         <script type='text/javascript' src='js/Writer.js'></script>
-        <script type='text/javascript' src='js/prim.js'></script>
+        <script type='text/javascript' src='js/prime.js'></script>
     </body>
 </html>
