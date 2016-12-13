@@ -21,7 +21,6 @@ class processNumber {
         $range = $this->getNumbersPerServer($num_server);
         $results = $this->SendToServers($server_ips, $range);
         $this->processResult($results);
-//        $this->processNumbers($range[0]);
 
     }
 
@@ -87,15 +86,14 @@ class processNumber {
         $start = $array[0];
         $end = $array[1];
         $to_test = $array[2];
-        for($result = $start; $end > $start; --$end) {
+        for($result = 1; $end > $start; --$end) {
             $x = $end;
             --$end;
             $y = $end;
-            
             $z = $this->getModuloOfPair($x, $y, $to_test);
             $result = ($result % $to_test) * $z;
         }
-        Utils::e("result of processed numbers: " .$result % $to_test);
+        Utils::e("result of processed numbers: " . $result % $to_test);
         return $result % $to_test;
     }
     
